@@ -4,7 +4,7 @@
 
 ### Project Overview
 
-This project covers the use of Promises in JavaScript, a fundamental feature of ES6 for managing asynchronous operations. You will explore how to use Promises, including `then`, `catch`, `resolve`, and the methods of the `Promise` object. Additionally, you'll delve into the `async` and `await` keywords, and understand error handling using `try/catch`.
+This project covers the use of Promises in JavaScript, a fundamental feature of ES6 for managing asynchronous operations. 
 
 ### Project Timeline
 
