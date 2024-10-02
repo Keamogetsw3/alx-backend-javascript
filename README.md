@@ -10,8 +10,6 @@ This project covers the use of Promises in JavaScript, a fundamental feature of 
 
 - **Start date**: Oct 1, 2024 6:00 AM
 - **End date**: Oct 3, 2024 6:00 AM
-- **Checker release**: Oct 1, 2024 6:00 PM
-- **Auto review**: Oct 3, 2024 6:00 AM
 
 ---
 
