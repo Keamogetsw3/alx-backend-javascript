@@ -1,17 +1,8 @@
 # 0x06. Unittests in JS
 
-UnitTests  
-Back-end  
-JavaScript  
-ES6  
-NodeJS  
-ExpressJS  
-Mocha  
+## UnitTests  |Back-end  |JavaScript  |ES6  |NodeJS  |ExpressJS  |Mocha  
 
-Weight: 1  
-Project will start Nov 27, 2024 6:00 AM, must end by Nov 29, 2024 6:00 AM  
-Checker will be released at Nov 27, 2024 6:00 PM  
-An auto review will be launched at the deadline  
+Project will start Nov 27, 2024 6:00 AM, must end by Nov 29, 2024 6:00 AM   
 
 ## Resources
 Read or watch:
