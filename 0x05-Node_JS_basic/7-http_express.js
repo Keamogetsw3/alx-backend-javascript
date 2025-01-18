@@ -1,5 +1,4 @@
 const express = require('express');
-
 const { readFile } = require('fs');
 
 const app = express();
@@ -20,25 +19,21 @@ function countStudents(fileName) {
           if (lines[i]) {
             length += 1;
             const field = lines[i].toString().split(',');
-            if (Object.prototype.hasOwnProperty.call(students, field[3])) {
-              students[field[3]].push(field[0]);
-            } else {
-              students[field[3]] = [field[0]];
-            }
-            if (Object.prototype.hasOwnProperty.call(fields, field[3])) {
-              fields[field[3]] += 1;
-            } else {
-              fields[field[3]] = 1;
+            if (field.length === 4 && field[3]) {  // Ensure valid line
+              if (Object.prototype.hasOwnProperty.call(students, field[3])) {
+                students[field[3]].push(field[0]);
+              } else {
+                students[field[3]] = [field[0]];
+              }
+              fields[field[3]] = (fields[field[3]] || 0) + 1;
             }
           }
         }
         const l = length - 1;
         output += `Number of students: ${l}\n`;
         for (const [key, value] of Object.entries(fields)) {
-          if (key !== 'field') {
-            output += `Number of students in ${key}: ${value}. `;
-            output += `List: ${students[key].join(', ')}\n`;
-          }
+          output += `Number of students in ${key}: ${value}. `;
+          output += `List: ${students[key].join(', ')}\n`;
         }
         resolve(output);
       }
@@ -49,15 +44,21 @@ function countStudents(fileName) {
 app.get('/', (req, res) => {
   res.send('Hello ALX!');
 });
+
 app.get('/students', (req, res) => {
-  countStudents(process.argv[2].toString()).then((output) => {
+  if (!process.argv[2]) {
+    res.send('This is the list of our students\nCannot load the database: No CSV file provided');
+    return;
+  }
+  countStudents(process.argv[2]).then((output) => {
     res.send(['This is the list of our students', output].join('\n'));
-  }).catch(() => {
-    res.send('This is the list of our students\nCannot load the database');
+  }).catch((err) => {
+    res.send(`This is the list of our students\nCannot load the database: ${err.message}`);
   });
 });
 
 app.listen(port, () => {
+  console.log(`Server listening on port ${port}`);
 });
 
 module.exports = app;
