@@ -1,63 +1,67 @@
 const express = require('express');
-
-const { readFile } = require('fs');
+const fs = require('fs');
 
 const app = express();
 const port = 1245;
 
-function countStudents(fileName) {
-  const students = {};
-  const fields = {};
-  let length = 0;
+function countStudents(path) {
   return new Promise((resolve, reject) => {
-    readFile(fileName, (err, data) => {
+    fs.readFile(path, 'utf8', (err, data) => {
       if (err) {
-        reject(err);
+        reject(new Error('Cannot load the database'));
       } else {
-        let output = '';
-        const lines = data.toString().split('\n');
-        for (let i = 0; i < lines.length; i += 1) {
-          if (lines[i]) {
-            length += 1;
-            const field = lines[i].toString().split(',');
-            if (Object.prototype.hasOwnProperty.call(students, field[3])) {
-              students[field[3]].push(field[0]);
-            } else {
-              students[field[3]] = [field[0]];
-            }
-            if (Object.prototype.hasOwnProperty.call(fields, field[3])) {
-              fields[field[3]] += 1;
-            } else {
-              fields[field[3]] = 1;
+        let count = 0;
+        let countCS = 0;
+        let countSWE = 0;
+        const listCS = [];
+        const listSWE = [];
+
+        const lines = data.split('\n');
+
+        for (const line of lines.slice(1)) {
+          if (line.trim() !== '') {
+            count += 1;
+
+            const fields = line.split(',');
+            if (fields[3] === 'CS') {
+              countCS += 1;
+              listCS.push(fields[0].trim());
+            } else if (fields[3] === 'SWE') {
+              countSWE += 1;
+              listSWE.push(fields[0].trim());
             }
           }
         }
-        const l = length - 1;
-        output += `Number of students: ${l}\n`;
-        for (const [key, value] of Object.entries(fields)) {
-          if (key !== 'field') {
-            output += `Number of students in ${key}: ${value}. `;
-            output += `List: ${students[key].join(', ')}\n`;
-          }
-        }
-        resolve(output);
+
+        resolve({
+          total: count,
+          csCount: countCS,
+          sweCount: countSWE,
+          csList: listCS,
+          sweList: listSWE,
+        });
       }
     });
   });
 }
 
 app.get('/', (req, res) => {
-  res.send('Hello ALX!');
-});
-app.get('/students', (req, res) => {
-  countStudents(process.argv[2].toString()).then((output) => {
-    res.send(['This is the list of our students', output].join('\n'));
-  }).catch(() => {
-    res.send('This is the list of our students\nCannot load the database');
-  });
+  res.send('Hello Holberton School!');
 });
 
-app.listen(port, () => {
+app.get('/students', (req, res) => {
+  countStudents(process.argv[2])
+    .then((result) => {
+      let output = 'This is the list of our students\n';
+      output += `Number of students: ${result.total}\n`;
+      output += `Number of students in CS: ${result.csCount}. List: ${result.csList.join(', ')}\n`;
+      output += `Number of students in SWE: ${result.sweCount}. List: ${result.sweList.join(', ')}`;
+      res.send(output);
+    })
+    .catch((error) => {
+      res.status(500).send(error.message);
+    });
 });
+app.listen(port, () => {});
 
 module.exports = app;
